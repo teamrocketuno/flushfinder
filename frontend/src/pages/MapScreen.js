@@ -10,13 +10,13 @@ SplashScreen.preventAutoHideAsync();
 const actions = [
   {
     text: "Add Bathroom",
-    icon: <Image source={require("../../Images/JohnLou.jpg")} style={{ width: 25, height: 25 }} />,
+    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 25, height: 25 }} />,
     name: "bt_addbathroom",
     position: 1,
   },
   {
     text: "Options",
-    icon: require("../../Images/JohnLou.jpg"),
+    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 25, height: 25 }} />,
     name: "bt_options",
     position: 2,
   },

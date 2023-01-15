@@ -112,9 +112,6 @@ app.post('/edit', function(req, res) {
       .min(3)
       .max(30)
       .optional(),
-    likes: Joi.number()
-      .min(0)
-      .optional(),
     open: Joi.boolean().optional()
   })
 
@@ -140,18 +137,15 @@ app.post('/edit', function(req, res) {
 
         updates = {}
 
-        // Update the doc with the editable attributes if they exist
+        // -- Update the doc with the editable attributes if they exist
         if (typeof(req.body.name) !== 'undefined') {
           updates.name = req.body.name
-        }
-    
-        if (typeof(req.body.likes) !== 'undefined') {
-          updates.likes = req.body.likes
         }
     
         if (typeof(req.body.open) !== 'undefined') {
           updates.open = req.body.open
         }
+        // -- End editable attributes
     
         docRef.update(updates)
           .then(writeResult => {
@@ -244,7 +238,6 @@ app.post('/rate', function(req, res) {
 // comment POST task
 app.post('/comment', function(req, res) {
   console.log('POST /comment')
-  console.log('POST /rate')
   console.dir(req.body)
 
   const schema = Joi.object().keys({
@@ -330,6 +323,68 @@ app.post('/comment', function(req, res) {
 // like POST task
 app.post('/like', function(req, res) {
   console.log('POST /like')
+  console.dir(req.body)
+
+  const schema = Joi.object().keys({
+    id: Joi.string().uuid().required(),
+    user: Joi.string().uuid().optional()
+  })
+
+  const { error, value } = schema.validate(req.body)
+  if (error) {
+    // Schema invalid
+    res.writeHead(400, {'Content-Type': 'text/json'})
+    error_response = { response: 400, error: `Validation error: ${error.details.map(x => x.message).join(', ')}` }
+    res.end(JSON.stringify(error_response))
+  } else {
+    req.body = value
+
+    // Search for toilet with the specified id
+    let docRef = firestore.collection(TOILET_COLLECTION).doc(req.body.id)
+    let doc = docRef.get()
+      .then(snapshot => {
+        if (!snapshot.exists) {
+          res.writeHead(400, {'Content-Type': 'text/json'})
+          error_response = { response: 400, error: 'Toilet does not exist.' }
+          res.end(JSON.stringify(error_response))
+          return
+        }
+
+        // TODO validate user against user collection
+        if (typeof(req.body.user) === 'undefined') {
+          req.body.user = ANONYMOUS_USER;
+        }
+
+        new_like = {
+          user: req.body.user,
+          time: Date.now()
+        }
+
+        docRef.update({likes: FieldValue.arrayUnion(new_like)})
+          .then(writeResult => {
+            complete_response = {
+              response: 200,
+              time: writeResult.writeTime.toDate(),
+              updated: `User ${req.body.user} liked toilet ${req.body.id}.`
+            }
+        
+            res.writeHead(200, {'Content-Type': 'text/json'})
+            res.end(JSON.stringify(complete_response))
+          })
+          .catch((err) => {
+            console.log(err)
+            res.writeHead(500, {'Content-Type': 'text/json'})
+            error_response = { response: 500, error: 'Error updating toilet.' }
+            res.end(JSON.stringify(error_response))
+          })
+      })
+      .catch((err) => {
+        console.log(err)
+        res.writeHead(500, {'Content-Type': 'text/json'})
+        error_response = { response: 500, error: 'Error updating toilet.' }
+        res.end(JSON.stringify(error_response))
+      })
+  }
 })
 
 app.post('/', function(req, res) {
@@ -342,12 +397,3 @@ app.post('/', function(req, res) {
 const port = 3000
 app.listen(port)
 console.log(`Listening at http://localhost:${port}`)
-
-
-// Validates using JOI according to the schema, returns whether the value is valid and error if applicable
-function validate(value, schema) {
-  return {
-    'valid': true,
-    'error': "none"
-  }
-}

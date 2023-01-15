@@ -30,8 +30,7 @@ export const ToiletMap = (props) => {
   }, [lastUpdate])
   
   return (
-    <MapView style={styles.map} onRegionChange={onRegionChange}>
-      <Marker key={1} coordinate={{latitude: 0, longitude: 0}} title={'test'} />
+    <MapView style={styles.map} onRegionChange={onRegionChange} showsMyLocationButton={true} showsUserLocation={true} >
       <MarkerComponent markers={markers} navigation={props.navigation} />
     </MapView>
   );
@@ -53,10 +52,7 @@ class MarkerComponent extends Component {
         coordinate = {{ latitude: importedMarker.latitude, longitude: importedMarker.longitude }}
         description = {importedMarker.id}
         onPress = {() => this.markerClick(importedMarker)}
-      >
-        <Callout tooltip={false}>
-        </Callout>
-      </Marker>
+      />
     )
   }
 

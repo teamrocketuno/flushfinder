@@ -1,6 +1,6 @@
 import { View, Button, Text } from 'react-native';
 
-export function MapScreen({ navigation }) {
+export const MapScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Map Screen</Text>

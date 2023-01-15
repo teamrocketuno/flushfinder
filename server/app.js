@@ -11,6 +11,7 @@ const firestore = new Firestore()
 
 app.use(express.urlencoded())
 
+// index GET
 app.get('/', function(request, response) {
   console.log('GET /')
   var html = `
@@ -22,6 +23,92 @@ app.get('/', function(request, response) {
   response.writeHead(200, {'Content-Type': 'text/html'})
   response.end(html)
 })
+
+// toilet GET
+// url/toilet/:id
+app.get('/data/toilet/:id', function(req, res) {
+  console.log('GET /data/toilet')
+  console.dir(req.params.id)
+  firestore.collection(TOILET_COLLECTION).doc(req.params.id).get()
+    .then(snapshot => {
+      if (!snapshot.exists) {
+        res.writeHead(400, {'Content-Type': 'text/json'})
+        error_response = { response: 400, error: 'Toilet does not exist.' }
+        res.end(JSON.stringify(error_response))
+        return
+      }
+
+      complete_response = {
+        response: 400,
+        time: snapshot.readTime.toDate(),
+        data: snapshot.data()
+      }
+
+      res.writeHead(200, {'Content-Type': 'text/json'})
+      res.end(JSON.stringify(complete_response))
+    })
+    .catch((err) => {
+      console.log(err)
+      res.writeHead(500, {'Content-Type': 'text/json'})
+      error_response = { response: 500, error: 'Error accessing data.' }
+      res.end(JSON.stringify(error_response))
+    })
+})
+
+// comment GET
+// url/comment?id1=<>&id2=<>
+app.get('/data/comment', function(req, res) {
+  console.log('GET /data/comment')
+  if (!req.query.id) {
+    res.writeHead(204, {'Content-Type': 'text/json'})
+    empty_response = { response: 204, data: [] }
+    res.end(JSON.stringify(empty_response))
+    return
+  }
+
+  // Convert to array
+  if (!Array.isArray(req.query.id)) {
+    req.query.id = [req.query.id]
+  }
+
+  console.dir(req.query.id)
+
+  const promises = [], data = [], invalid_ids = []
+  req.query.id.forEach((id) => promises.push(requestAsync(id, data, invalid_ids)))
+  Promise.all(promises)
+    .then(() => {
+      res.writeHead(200, {'Content-Type': 'text/json'})
+      complete_response = { response: 200, time: Date.now(), data: data, invalid_ids: invalid_ids }
+      res.end(JSON.stringify(complete_response))
+    })
+    .catch((err) => {
+      console.log(err)
+      res.writeHead(500, {'Content-Type': 'text/json'})
+      error_response = { response: 500, error: 'Error accessing data.' }
+      res.end(JSON.stringify(error_response))
+    })
+})
+
+const requestAsync = async (id, data_arr, invalid_ids_arr) => {
+  let docRef = firestore.collection(COMMENT_COLLECTION).doc(id)
+  try {
+    let snapshot = await docRef.get();
+    if (!snapshot.exists) {
+      invalid_ids_arr.push(id)
+      return
+    }
+
+    data_arr.push(snapshot.data())
+  } catch (err) {
+    console.log(err)
+    /*
+    res.writeHead(500, {'Content-Type': 'text/json'})
+    error_response = { response: 500, error: 'Error accessing data.' }
+    res.end(JSON.stringify(error_response))
+    */
+    invalid_ids_arr.push(id)
+  }
+}
 
 const LATITUDE_MIN = -90
 const LATITUDE_MAX = 90

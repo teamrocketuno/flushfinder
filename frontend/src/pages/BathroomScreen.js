@@ -1,13 +1,31 @@
+import { useEffect, useState } from "react";
 import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions } from "react-native";
 import MapView from 'react-native-maps';
+import { Component } from "react";
 
 const background = '../../assets/backgrounds/bg1.png';
 const poopEmoji = '../../Images/Goldenpoo.png';
 
+const URL = 'http://172.104.196.152/';
+const MIN_COMMENT_LEN = 1;
+const MAX_COMMENT_LEN = 100;
+
 let {height, width} = Dimensions.get('window')
 
 export function BathroomScreen({ navigation, route }) {
+  const [distance, setDistance] = useState('');
+  const [comments, setComments] = useState([]);
+  const [textInput, setTextInput] = useState(undefined);
   const {marker} = route.params;
+  const [toilet, setToilet] = useState(marker)
+
+  useEffect(() => {
+    fetchComments().then((data) => {setComments(data)}).catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    fetchComments().then((data) => setComments(data)).catch((err) => console.log(err));
+  }, [toilet])
 
   function calcAverageRating(ratings) {
     if (ratings.length == 0) return 'Unrated'
@@ -19,6 +37,67 @@ export function BathroomScreen({ navigation, route }) {
     });
     return result / amount;
   }
+
+  function uploadComment(text) {
+    if (text.length <= MIN_COMMENT_LEN || text.length >= MAX_COMMENT_LEN) return; // Do nothing if no name
+
+    var details = {
+      'id': toilet.id,
+      'comment': text,
+    };
+    
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    
+    fetch(URL + 'comment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: formBody
+    })
+      .then(response => response.json())
+        .then(json => {
+          // Refresh comments
+          textInput.clear();
+          fetchData().then((data) => {
+            setToilet(data);
+          }).catch((err) => console.log(err));
+        })
+      .catch(err => console.error(err))
+  }
+
+  async function fetchComments() {
+    try {
+      let response = await fetch(URL + "data/comment?" + formatCommentIds())
+      let json = await response.json();
+      return json.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function fetchData() {
+    try {
+      let response = await fetch(URL + "data/toilet/" + toilet.id)
+      let json = await response.json();
+      return json.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  function formatCommentIds() {
+    if (toilet.comments.length == 0) return '';
+    let result = '';
+    toilet.comments.forEach((id) => result = result + `id=${id}&`)
+    return result;
+  }
   
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
@@ -29,16 +108,16 @@ export function BathroomScreen({ navigation, route }) {
         <View style={styles.likesContainer}>
           <Image source={require(poopEmoji)}
             style={{ width: [width]/10, height: [width]/10 }} />
-          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>{marker.likes.length}</Text>
+          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>{toilet.likes.length}</Text>
         </View>
 
         <View style={styles.genInfoContainer}>
-          <Text style={styles.genInfoLeftSpaceContainer}>{marker.name}</Text>
-          <Text style={styles.genInfoRightSpaceContainer}>0.2 mi</Text>
+          <Text style={styles.genInfoLeftSpaceContainer}>{toilet.name}</Text>
+          <Text style={styles.genInfoRightSpaceContainer}>{distance}</Text>
         </View>
         <View style={styles.genInfoContainer}>
-          <Text style={styles.genInfoLeftSpaceContainer}>{calcAverageRating(marker.ratings)} / 5</Text>
-          <Text style={styles.genInfoRightSpaceContainer}>{marker.open ? 'Open' : 'Closed'}</Text>
+          <Text style={styles.genInfoLeftSpaceContainer}>{calcAverageRating(toilet.ratings)} / 5</Text>
+          <Text style={styles.genInfoRightSpaceContainer}>{toilet.open ? 'Open' : 'Closed'}</Text>
         </View>
 
         <View style={styles.centerContainer}>
@@ -60,20 +139,54 @@ export function BathroomScreen({ navigation, route }) {
 
         <View style={styles.commentTitleSpacing}>
           <Text style={styles.genInfoLeftSpaceContainer}>Comments</Text>
-          <Text style={styles.genInfoRightSpaceContainer}>numComments</Text>
+          <Text style={styles.genInfoRightSpaceContainer}>{toilet.comments.length}</Text>
         </View>
 
         <View style={styles.commentTitleSpacing}>
-          <TextInput style={styles.textInput} placeholder="Comment..." />
+          <TextInput style={styles.textInput} ref={input => { setTextInput(input) }} placeholder="Comment..." onSubmitEditing={(event) => uploadComment(event.nativeEvent.text)} />
         </View>
 
-        <View style={styles.commentTitleSpacing}>
-          <Text style={styles.genInfoLeftSpaceContainer}>accountName</Text>
-          <Text style={styles.genInfoRightSpaceContainer}>timeStamp</Text>
-        </View>
+        <CommentComponent comments={comments} />
       </View>
     </ImageBackground>
   );
+}
+
+class CommentComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  renderComments() {
+    return this.props.comments.map((comment) => <Comment account={comment.user} time={comment.time} text={comment.text} />)
+  }
+
+  render() {
+    return (this.renderComments());
+  }
+}
+
+const ANONYMOUS_USER = '00000000-0000-0000-0000-000000000000'
+
+const Comment = (props) => {
+
+  function formatDate() {
+    var t = new Date( props.time );
+    return t.toLocaleString();
+  }
+
+  return (
+    <>
+      <View style={styles.commentTitleSpacing}>
+        <Text style={styles.genInfoLeftSpaceContainer}>{props.account === ANONYMOUS_USER ? 'Anonymous' : 'User'}</Text>
+        <Text style={styles.genInfoRightSpaceContainer}>{formatDate()}</Text>
+      </View>
+      <View>
+        <Text style={styles.genInfoLeftSpaceContainer}>{props.text}</Text>
+        <Text style={styles.genInfoLeftSpaceContainer}></Text>
+      </View>
+    </>
+  )
 }
 
 const styles = StyleSheet.create({

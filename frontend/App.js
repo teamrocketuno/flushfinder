@@ -1,60 +1,98 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, ScrollView, StyleSheet, Text, Image, TextInput, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function App() {
+function MapScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Map Screen</Text>
+      <Button
+        title="View Bathroom"
+        onPress={() => navigation.navigate('Bathroom')}
+      />
+      <Button
+        title="Add Bathroom"
+        onPress={() => navigation.navigate('AddBathroom')}
+      />
+    </View>
+  );
+}
+
+function BathroomScreen({ navigation }) {
   return (
     <View style={styles.appContainer}>
 
-    <Image source={require('./ExitButton.png')} 
-     style={{width: 100, height: 100}} />
+        <Image source={require('./ExitButton.png')}
+            style={{ width: 100, height: 100 }} />
 
-      <View style={styles.centerExitBoxContainer}>
-        <View style={styles.exitBox}></View>
-      </View>
+        <View style={styles.centerExitBoxContainer}>
+            <View style={styles.exitBox}></View>
+        </View>
 
-      <View style={styles.genInfoContainer}>
-        <Text style={styles.genInfoLeftSpaceContainer}>Chung Hall Bathroom</Text>
-        <Text style={styles.genInfoRightSpaceContainer}>0.2 mi</Text>
-      </View>
-      <View style={styles.genInfoContainer}>
-        <Text style={styles.genInfoLeftSpaceContainer}>Star Rating</Text>
-        <Text style={styles.genInfoRightSpaceContainer}>Open</Text>
-      </View>
+        <View style={styles.genInfoContainer}>
+            <Text style={styles.genInfoLeftSpaceContainer}>Chung Hall Bathroom</Text>
+            <Text style={styles.genInfoRightSpaceContainer}>0.2 mi</Text>
+        </View>
+        <View style={styles.genInfoContainer}>
+            <Text style={styles.genInfoLeftSpaceContainer}>Star Rating</Text>
+            <Text style={styles.genInfoRightSpaceContainer}>Open</Text>
+        </View>
 
-      <View style={styles.centerContainer}>
-        <Button title="Verify" />
-      </View>
+        <View style={styles.centerContainer}>
+            <Button title="Verify" />
+        </View>
 
-      <View style={styles.centerContainer}>
-        <View style={styles.sectionBorder}></View>
-      </View>
+        <View style={styles.centerContainer}>
+            <View style={styles.sectionBorder}></View>
+        </View>
 
-      <View style={styles.attributeSpacingContainer}>
-        <Text style={styles.attributeListContainer}>Wheel-Chair Accessible</Text>
-        <Text style={styles.attributeListContainer}>Gender Neutral</Text>
-      </View>
+        <View style={styles.attributeSpacingContainer}>
+            <Text style={styles.attributeListContainer}>Wheel-Chair Accessible</Text>
+            <Text style={styles.attributeListContainer}>Gender Neutral</Text>
+        </View>
 
-      <View style={styles.centerContainer}>
-        <View style={styles.sectionBorder}></View>
-      </View>
+        <View style={styles.centerContainer}>
+            <View style={styles.sectionBorder}></View>
+        </View>
 
-      <View style={styles.commentTitleSpacing}>
-        <Text style={styles.genInfoLeftSpaceContainer}>Comments</Text>
-        <Text style={styles.genInfoRightSpaceContainer}>numComments</Text>
-      </View>
+        <View style={styles.commentTitleSpacing}>
+            <Text style={styles.genInfoLeftSpaceContainer}>Comments</Text>
+            <Text style={styles.genInfoRightSpaceContainer}>numComments</Text>
+        </View>
 
-      <View style={styles.commentTitleSpacing}>
-        <TextInput style={styles.textInput} placeholder="Comment..." />
-      </View>
+        <View style={styles.commentTitleSpacing}>
+            <TextInput style={styles.textInput} placeholder="Comment..." />
+        </View>
 
-      <View style={styles.commentTitleSpacing}>
-        <Text style={styles.genInfoLeftSpaceContainer}>accountName</Text>
-        <Text style={styles.genInfoRightSpaceContainer}>timeStamp</Text>
-      </View>
+        <View style={styles.commentTitleSpacing}>
+            <Text style={styles.genInfoLeftSpaceContainer}>accountName</Text>
+            <Text style={styles.genInfoRightSpaceContainer}>timeStamp</Text>
+        </View>
 
     </View>
+  );
+}
 
-    
+function AddBathroomScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Add a New Bathroom</Text>
+    </View>
+  );
+}
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Bathroom" component={BathroomScreen} />
+        <Stack.Screen name="AddBathroom" component={AddBathroomScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

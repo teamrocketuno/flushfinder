@@ -1,6 +1,11 @@
-import { View, StyleSheet, Image } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 import MapView from 'react-native-maps';
+import { View, Button, Text, StyleSheet, Platform, Image, Dimensions } from 'react-native';
+import { useCallback } from 'react';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const actions = [
   {
@@ -23,12 +28,32 @@ const navmap = {
 }
 
 export const MapScreen = ({ navigation }) => {
+  const [fontsLoaded] = useFonts({
+    'Righteous': require('../../assets/fonts/Righteous-Regular.ttf'),
+    'PatuaOne': require('../../assets/fonts/PatuaOne-Regular.ttf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <MapView style={styles.map} />
       <FloatingAction
         actions={actions}
         onPressItem={name => navigation.navigate(navmap[name])}
+      />
+      <Text style={styles.titleText}>FlushFinder</Text>
+      <Button
+        title="View Bathroom"
+        onPress={() => navigation.navigate('Bathroom')}
       />
     </View>
   );
@@ -49,4 +74,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10
   },
-});
+    defaultText:{
+      fontFamily: 'PatuaOne',
+    },
+    titleText:{
+      fontFamily: 'Righteous',
+      fontSize: 30,
+    },
+  });

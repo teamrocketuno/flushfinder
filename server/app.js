@@ -33,6 +33,7 @@ const LONGITUDE_MAX = 180
 const USER_COLLECTION = 'users'
 const TOILET_COLLECTION = 'toilets'
 const COMMENT_COLLECTION = 'comments'
+const ANONYMOUS_USER = '00000000-0000-0000-0000-000000000000'
 
 // create POST task
 app.post('/create', function(req, res) {
@@ -243,6 +244,87 @@ app.post('/rate', function(req, res) {
 // comment POST task
 app.post('/comment', function(req, res) {
   console.log('POST /comment')
+  console.log('POST /rate')
+  console.dir(req.body)
+
+  const schema = Joi.object().keys({
+    id: Joi.string().uuid().required(),
+    user: Joi.string().uuid().optional(),
+    comment: Joi.string().min(1).max(100).required(),
+  })
+
+  const { error, value } = schema.validate(req.body)
+  if (error) {
+    // Schema invalid
+    res.writeHead(400, {'Content-Type': 'text/json'})
+    error_response = { response: 400, error: `Validation error: ${error.details.map(x => x.message).join(', ')}` }
+    res.end(JSON.stringify(error_response))
+  } else {
+    req.body = value
+
+    // Search for toilet with the specified id
+    let docRef = firestore.collection(TOILET_COLLECTION).doc(req.body.id)
+    let doc = docRef.get()
+      .then(snapshot => {
+        if (!snapshot.exists) {
+          res.writeHead(400, {'Content-Type': 'text/json'})
+          error_response = { response: 400, error: 'Toilet does not exist.' }
+          res.end(JSON.stringify(error_response))
+          return
+        }
+
+        // TODO validate user against user collection
+        if (typeof(req.body.user) === 'undefined') {
+          req.body.user = ANONYMOUS_USER;
+        }
+
+        new_comment = {
+          id: uuidv4(),
+          user: req.body.user,
+          text: req.body.comment,
+          time: Date.now()
+        }
+
+        // Add comment to comments collection
+        comment_did_upload = true
+        let collectionRef = firestore.collection(COMMENT_COLLECTION)
+        let commentDoc = collectionRef.doc(new_comment.id)
+        commentDoc.create(new_comment)
+          .catch((err) => {
+            console.log(err)
+            res.writeHead(500, {'Content-Type': 'text/json'})
+            error_response = { response: 500, error: 'Could not write to database.' }
+            res.end(JSON.stringify(error_response))
+            comment_did_upload = false
+          })
+        if (!comment_did_upload) return // We already sent a response, exit prematurely
+
+        docRef.update({comments: FieldValue.arrayUnion(new_comment.id)})
+          .then(writeResult => {
+            complete_response = {
+              response: 200,
+              time: writeResult.writeTime.toDate(),
+              comment_time: new_comment.time,
+              updated: `User ${req.body.user} added comment "${req.body.comment}" to toilet ${req.body.id}.`
+            }
+        
+            res.writeHead(200, {'Content-Type': 'text/json'})
+            res.end(JSON.stringify(complete_response))
+          })
+          .catch((err) => {
+            console.log(err)
+            res.writeHead(500, {'Content-Type': 'text/json'})
+            error_response = { response: 500, error: 'Error updating toilet.' }
+            res.end(JSON.stringify(error_response))
+          })
+      })
+      .catch((err) => {
+        console.log(err)
+        res.writeHead(500, {'Content-Type': 'text/json'})
+        error_response = { response: 500, error: 'Error updating toilet.' }
+        res.end(JSON.stringify(error_response))
+      })
+  }
 })
 
 // like POST task

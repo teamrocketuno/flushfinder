@@ -45,15 +45,11 @@ export const MapScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
+      <Text style={styles.titleText}>FlushFinder</Text>
       <MapView style={styles.map} />
       <FloatingAction
         actions={actions}
         onPressItem={name => navigation.navigate(navmap[name])}
-      />
-      <Text style={styles.titleText}>FlushFinder</Text>
-      <Button
-        title="View Bathroom"
-        onPress={() => navigation.navigate('Bathroom')}
       />
     </View>
   );
@@ -74,11 +70,13 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10
   },
-    defaultText:{
-      fontFamily: 'PatuaOne',
-    },
-    titleText:{
-      fontFamily: 'Righteous',
-      fontSize: 30,
-    },
+  defaultText:{
+    fontFamily: 'PatuaOne',
+  },
+  titleText:{
+    position: 'absolute',
+    top: '6%',
+    fontFamily: 'Righteous',
+    fontSize: 30,
+  },
   });

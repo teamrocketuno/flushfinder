@@ -191,6 +191,7 @@ class CommentComponent extends Component {
   }
 
   renderComments() {
+    this.props.comments.sort((a, b) => (a.time > b.time) ? 1 : -1)
     return this.props.comments.map((comment) => <Comment account={comment.user} time={comment.time} text={comment.text} />)
   }
 

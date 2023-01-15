@@ -4,6 +4,15 @@ const Joi = require('joi')
 const { Firestore, FieldValue } = require('@google-cloud/firestore')
 const { v4: uuidv4 } = require('uuid')
 
+const LATITUDE_MIN = -90
+const LATITUDE_MAX = 90
+const LONGITUDE_MIN = -180
+const LONGITUDE_MAX = 180
+const USER_COLLECTION = 'users'
+const TOILET_COLLECTION = 'toilets'
+const COMMENT_COLLECTION = 'comments'
+const ANONYMOUS_USER = '00000000-0000-0000-0000-000000000000'
+
 var app = express()
 // Authenticate using ADC and backend secret key (stored in Git secret repo)
 // see: https://cloud.google.com/docs/authentication/provide-credentials-adc#wlif-key
@@ -24,8 +33,38 @@ app.get('/', function(request, response) {
   response.end(html)
 })
 
+async function getAllToilets() {
+  const data = []
+  await firestore.collection(TOILET_COLLECTION).get()
+    .then(querySnapshot => {
+      querySnapshot.docs.forEach(doc => data.push(doc.data()));
+  });
+  return data
+}
+
+// all data GEt
+// /data/all
+app.get('/data/all', async function(req, res) {
+  getAllToilets()
+    .then((data) => {
+      complete_response = {
+        response: 200,
+        time: Date.now(),
+        data: data,
+      }
+      res.writeHead(200, {'Content-Type': 'text/json'})
+      res.end(JSON.stringify(complete_response))
+    })
+    .catch((err) => {
+      console.log(err)
+      res.writeHead(500, {'Content-Type': 'text/json'})
+      error_response = { response: 500, error: 'Error accessing data.' }
+      res.end(JSON.stringify(error_response))
+    })
+})
+
 // toilet GET
-// url/toilet/:id
+// /data/toilet/:id
 app.get('/data/toilet/:id', function(req, res) {
   console.log('GET /data/toilet')
   console.dir(req.params.id)
@@ -56,7 +95,7 @@ app.get('/data/toilet/:id', function(req, res) {
 })
 
 // comment GET
-// url/comment?id1=<>&id2=<>
+// /data/comment?id1=<>&id2=<>
 app.get('/data/comment', function(req, res) {
   console.log('GET /data/comment')
   if (!req.query.id) {
@@ -109,15 +148,6 @@ const requestAsync = async (id, data_arr, invalid_ids_arr) => {
     invalid_ids_arr.push(id)
   }
 }
-
-const LATITUDE_MIN = -90
-const LATITUDE_MAX = 90
-const LONGITUDE_MIN = -180
-const LONGITUDE_MAX = 180
-const USER_COLLECTION = 'users'
-const TOILET_COLLECTION = 'toilets'
-const COMMENT_COLLECTION = 'comments'
-const ANONYMOUS_USER = '00000000-0000-0000-0000-000000000000'
 
 // create POST task
 app.post('/create', function(req, res) {

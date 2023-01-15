@@ -6,7 +6,7 @@ export default function App() {
     <View style={styles.appContainer}>
 
     <Image source={require('./ExitButton.png')} 
-     style={{width: 100, height: 100}} />
+     style={{width: 200, height: 100}} />
 
       <View style={styles.centerExitBoxContainer}>
         <View style={styles.exitBox}></View>

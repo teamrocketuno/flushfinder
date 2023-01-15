@@ -4,6 +4,7 @@ import { View, Button, Text, StyleSheet, Platform, Image, Dimensions } from 'rea
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { ToiletMap } from "../components/ToiletMap";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,7 +47,7 @@ export const MapScreen = ({ navigation }) => {
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <Text style={styles.titleText}>FlushFinder</Text>
-      <MapView style={styles.map} />
+      <ToiletMap style={styles.map} />
       <FloatingAction
         actions={actions}
         onPressItem={name => navigation.navigate(navmap[name])}
@@ -60,11 +61,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-    zIndex: -1
   },
   icon: {
     width: 10,

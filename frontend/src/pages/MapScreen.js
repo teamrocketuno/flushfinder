@@ -1,11 +1,31 @@
 import { View, Button, Text, StyleSheet, Platform, Image, Dimensions } from 'react-native';
+import { useCallback } from 'react';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 let {height, width} = Dimensions.get('window')
 
 export const MapScreen = ({ navigation }) => {
+  const [fontsLoaded] = useFonts({
+    'Righteous': require('../../assets/fonts/Righteous-Regular.ttf'),
+    'PatuaOne': require('../../assets/fonts/PatuaOne-Regular.ttf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.MainContainer}>
-      <Text>Map Screen</Text>
+    <View style={styles.MainContainer} onLayout={onLayoutRootView}>
+      <Text style={styles.titleText}>FlushFinder</Text>
       <Button
         title="View Bathroom"
         onPress={() => navigation.navigate('Bathroom')}
@@ -31,6 +51,13 @@ export const MapScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create(
   {
+    defaultText:{
+      fontFamily: 'PatuaOne',
+    },
+    titleText:{
+      fontFamily: 'Righteous',
+      fontSize: 30,
+    },
     MainContainer:
     {
       flex: 1,

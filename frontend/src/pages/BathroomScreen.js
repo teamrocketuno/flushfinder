@@ -1,9 +1,12 @@
-import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput } from "react-native";
+import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions } from "react-native";
 
 const background = '../../assets/backgrounds/bg1.png';
 const poopEmoji = '../../PoopEmoji.png';
 
+let {height, width} = Dimensions.get('window')
+
 export function BathroomScreen({ navigation }) {
+  
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
       <View style={styles.appContainer}>
@@ -12,8 +15,8 @@ export function BathroomScreen({ navigation }) {
 
         <View style={styles.likesContainer}>
           <Image source={require(poopEmoji)}
-            style={{ width: 25, height: 25 }} />
-          <Text style={{ fontSize: 20 }}>numLikes</Text>
+            style={{ width: [width]/10, height: [width]/10 }} />
+          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>numLikes</Text>
         </View>
 
         <View style={styles.genInfoContainer}>
@@ -66,7 +69,11 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover'
   },
+  textFont:{
+    fontFamily: 'PatuaOne',
+  },
   appContainer:{
+    fontFamily: 'PatuaOne',
     backgroundColor: 'white',
     borderRadius: 20,
     margin: '8%',

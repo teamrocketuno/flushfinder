@@ -100,7 +100,7 @@ app.get('/data/comment', function(req, res) {
   console.log('GET /data/comment')
   if (!req.query.id) {
     res.writeHead(204, {'Content-Type': 'text/json'})
-    empty_response = { response: 204, data: [] }
+    empty_response = { response: 200, data: [] }
     res.end(JSON.stringify(empty_response))
     return
   }

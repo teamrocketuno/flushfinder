@@ -16,10 +16,7 @@ app.get('/', function(request, response) {
   var html = `
     <html>
         <body>
-            <form method="post" action="http://localhost:3000">Name: 
-                <input type="text" name="name" />
-                <input type="submit" value="Submit" />
-            </form>
+            Welcome to the flushfinder API :)
         </body>
     </html>`
   response.writeHead(200, {'Content-Type': 'text/html'})
@@ -385,13 +382,6 @@ app.post('/like', function(req, res) {
         res.end(JSON.stringify(error_response))
       })
   }
-})
-
-app.post('/', function(req, res) {
-  console.log('POST /')
-  console.dir(req.body)
-  res.writeHead(200, {'Content-Type': 'text/html'})
-  res.end(req.body.name)
 })
 
 const port = 3000

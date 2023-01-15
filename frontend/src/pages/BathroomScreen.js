@@ -101,7 +101,8 @@ export function BathroomScreen({ navigation, route }) {
   
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
-      <ScrollView style={styles.appContainer}>
+      <ScrollView>
+      <View style={styles.appContainer}>
 
         <View style={styles.invisibleBlock}></View>
 
@@ -146,6 +147,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <CommentComponent comments={comments} />
+      </View>
       </ScrollView>
     </ImageBackground>
   );
@@ -230,21 +232,18 @@ const styles = StyleSheet.create({
     fontFamily: 'PatuaOne',
   },
   appContainer:{
-    paddingTop: 10,
-    fontFamily: 'PatuaOne',
     backgroundColor: 'white',
     borderRadius: 20,
     margin: '8%',
     opacity: 1,
-    shadowColor: "#000",
-    shadowColor: 'white',
+    shadowColor: 'black',
 
     shadowOffset: {
-      width: 0,
-      height: 0,
+      width: [width]/50,
+      height: [height]/50,
     },
-    shadowOpacity: 2.8,
-    shadowRadius: 6.27,
+    shadowOpacity: .5,
+    shadowRadius: 0,
     
     elevation: 10,
   },
@@ -300,7 +299,7 @@ const styles = StyleSheet.create({
   sectionBorder:{
     borderColor: 'black',
     borderWidth: 1,
-    width: 300,
+    width: '100%',
     marginTop: 10,
     marginBottom: 15,
   },

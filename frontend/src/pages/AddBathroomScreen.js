@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput  } from 'react-native';
+import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions  } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const background = '../../assets/backgrounds/bg3.png';
@@ -8,6 +8,8 @@ const poopEmoji = '../../PoopEmoji.png';
 const URL = 'http://172.104.196.152/';
 const MIN_TOILET_NAME = 3;
 const MAX_TOILET_NAME = 30;
+
+let {height, width} = Dimensions.get('window')
 
 export const AddBathroomScreen = ({ navigation }) => {
   const [currentText, setCurrentText] = useState('');
@@ -90,15 +92,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: '8%',
     opacity: 1,
-    shadowColor: "#000",
-    shadowColor: 'white',
+    shadowColor: 'black',
 
     shadowOffset: {
-      width: 0,
-      height: 0,
+      width: [width]/50,
+      height: [height]/50,
     },
-    shadowOpacity: 2.8,
-    shadowRadius: 6.27,
+    shadowOpacity: .5,
+    shadowRadius: 0,
     
     elevation: 10,
   },

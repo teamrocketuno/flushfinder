@@ -13,9 +13,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Map" component={MapScreen} />
-        <Stack.Screen name="Bathroom" component={BathroomScreen} />
-        <Stack.Screen name="AddBathroom" component={AddBathroomScreen} />
+        <Stack.Screen name="Map" component={MapScreen} options={{headerShown: false}} />
+        <Stack.Screen name="Bathroom" component={BathroomScreen} options={{headerShown: false}} />
+        <Stack.Screen name="AddBathroom" component={AddBathroomScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,8 @@
 import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions } from "react-native";
+import MapView from 'react-native-maps';
 
 const background = '../../assets/backgrounds/bg1.png';
-const poopEmoji = '../../PoopEmoji.png';
+const poopEmoji = '../../Images/Goldenpoo.png';
 
 let {height, width} = Dimensions.get('window')
 

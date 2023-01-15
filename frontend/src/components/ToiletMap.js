@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet } from "react-native";
+import MapView, { Marker, Callout } from 'react-native-maps';
+import { StyleSheet, TouchableHighlight, View, Text } from "react-native";
 
 const URL = 'http://172.104.196.152/';
 
@@ -32,7 +32,7 @@ export const ToiletMap = (props) => {
   return (
     <MapView style={styles.map} onRegionChange={onRegionChange}>
       <Marker key={1} coordinate={{latitude: 0, longitude: 0}} title={'test'} />
-      <MarkerComponent markers={markers} />
+      <MarkerComponent markers={markers} navigation={props.navigation} />
     </MapView>
   );
 };
@@ -42,14 +42,21 @@ class MarkerComponent extends Component {
     super(props);
   }
 
+  markerClick(importedMarker) {
+    this.props.navigation.navigate('Bathroom', {marker: importedMarker})
+  }
+
   renderMarkers() {
-    console.log('Attempting render of ' + this.props.markers.length + ' markers!')
     return this.props.markers.map((importedMarker) => <Marker
-       key = {importedMarker.id}
-       title = {importedMarker.name}
-       coordinate = {{ latitude: importedMarker.latitude, longitude: importedMarker.longitude }}
-       description = {importedMarker.id}
-     />
+        key = {importedMarker.id}
+        title = {importedMarker.name}
+        coordinate = {{ latitude: importedMarker.latitude, longitude: importedMarker.longitude }}
+        description = {importedMarker.id}
+        onPress = {() => this.markerClick(importedMarker)}
+      >
+        <Callout tooltip={false}>
+        </Callout>
+      </Marker>
     )
   }
 
@@ -64,4 +71,7 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: -1
   },
+  callout: {
+    opacity: 0,
+  }
 })

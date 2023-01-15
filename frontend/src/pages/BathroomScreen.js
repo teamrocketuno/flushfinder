@@ -5,7 +5,19 @@ const poopEmoji = '../../PoopEmoji.png';
 
 let {height, width} = Dimensions.get('window')
 
-export function BathroomScreen({ navigation }) {
+export function BathroomScreen({ navigation, route }) {
+  const {marker} = route.params;
+
+  function calcAverageRating(ratings) {
+    if (ratings.length == 0) return 'Unrated'
+    let amount = 0;
+    let result = 0;
+    ratings.forEach(element => {
+      result += element.rating;
+      amount++;
+    });
+    return result / amount;
+  }
   
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
@@ -16,16 +28,16 @@ export function BathroomScreen({ navigation }) {
         <View style={styles.likesContainer}>
           <Image source={require(poopEmoji)}
             style={{ width: [width]/10, height: [width]/10 }} />
-          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>numLikes</Text>
+          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>{marker.likes.length}</Text>
         </View>
 
         <View style={styles.genInfoContainer}>
-          <Text style={styles.genInfoLeftSpaceContainer}>Chung Hall Bathroom</Text>
+          <Text style={styles.genInfoLeftSpaceContainer}>{marker.name}</Text>
           <Text style={styles.genInfoRightSpaceContainer}>0.2 mi</Text>
         </View>
         <View style={styles.genInfoContainer}>
-          <Text style={styles.genInfoLeftSpaceContainer}>Star Rating</Text>
-          <Text style={styles.genInfoRightSpaceContainer}>Open</Text>
+          <Text style={styles.genInfoLeftSpaceContainer}>{calcAverageRating(marker.ratings)} / 5</Text>
+          <Text style={styles.genInfoRightSpaceContainer}>{marker.open ? 'Open' : 'Closed'}</Text>
         </View>
 
         <View style={styles.centerContainer}>
@@ -121,7 +133,7 @@ const styles = StyleSheet.create({
   },
   sectionBorder:{
     borderColor: 'black',
-    borderWidth: '1',
+    borderWidth: 1,
     width: 300,
     marginTop: 10,
     marginBottom: 15,
@@ -140,7 +152,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   commentTitleSpacing:{
-    alignItems: 'left',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 5,

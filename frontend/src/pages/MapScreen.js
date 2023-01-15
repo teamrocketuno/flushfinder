@@ -47,7 +47,7 @@ export const MapScreen = ({ navigation }) => {
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <Text style={styles.titleText}>FlushFinder</Text>
-      <ToiletMap style={styles.map} />
+      <ToiletMap style={styles.map} navigation={navigation} />
       <FloatingAction
         actions={actions}
         onPressItem={name => navigation.navigate(navmap[name])}

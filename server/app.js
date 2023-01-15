@@ -185,7 +185,7 @@ app.post('/create', function(req, res) {
       'name': req.body.name,
       'latitude': req.body.latitude,
       'longitude': req.body.longitude,
-      'likes': 0,
+      'likes': [],
       'ratings': [],
       'attributes': [],
       'open': true,

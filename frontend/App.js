@@ -16,7 +16,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Map" component={MapScreen} options={{headerShown: false}} />
-        <Stack.Screen name="Bathroom" component={BathroomScreen} options={{headerShown: false, gestureDirection: 'vertical'}} />
+        <Stack.Screen name="Bathroom" component={BathroomScreen} options={{headerShown: false}} />
         <Stack.Screen name="AddBathroom" component={AddBathroomScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>

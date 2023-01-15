@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, TouchableHighlight, View, Text } from "react-native";
+import { StyleSheet, Image } from "react-native";
 
 const URL = 'http://172.104.196.152/';
 
@@ -52,7 +52,7 @@ class MarkerComponent extends Component {
         coordinate = {{ latitude: importedMarker.latitude, longitude: importedMarker.longitude }}
         description = {importedMarker.id}
         onPress = {() => this.markerClick(importedMarker)}
-      />
+      ><Image source={require("../../Images/JohnLou.png")} style={{ width: 40, height: 40 }} /></Marker>
     )
   }
 

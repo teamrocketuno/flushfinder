@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions } from "react-native";
+import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions, ScrollView } from "react-native";
 import MapView from 'react-native-maps';
 import { Component } from "react";
 
-const background = '../../assets/backgrounds/bg1.png';
+const background = '../../assets/backgrounds/bg3.png';
 const poopEmoji = '../../Images/Goldenpoo.png';
 
 const URL = 'http://172.104.196.152/';
@@ -101,7 +101,7 @@ export function BathroomScreen({ navigation, route }) {
   
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
-      <View style={styles.appContainer}>
+      <ScrollView style={styles.appContainer}>
 
         <View style={styles.invisibleBlock}></View>
 
@@ -112,7 +112,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <View style={styles.genInfoContainer}>
-          <Text style={styles.genInfoLeftSpaceContainer}>{toilet.name}</Text>
+          <Text style={styles.genLeftTitleContainer}>{toilet.name}</Text>
           <Text style={styles.genInfoRightSpaceContainer}>{distance}</Text>
         </View>
         <View style={styles.genInfoContainer}>
@@ -138,7 +138,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <View style={styles.commentTitleSpacing}>
-          <Text style={styles.genInfoLeftSpaceContainer}>Comments</Text>
+          <Text style={styles.genLeftCommentTitle}>Comments</Text>
           <Text style={styles.genInfoRightSpaceContainer}>{toilet.comments.length}</Text>
         </View>
 
@@ -147,7 +147,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <CommentComponent comments={comments} />
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -178,7 +178,7 @@ const Comment = (props) => {
   return (
     <>
       <View style={styles.commentTitleSpacing}>
-        <Text style={styles.genInfoLeftSpaceContainer}>{props.account === ANONYMOUS_USER ? 'Anonymous' : 'User'}</Text>
+        <Text style={styles.genInfoLeftSpaceNameContainer}>{props.account === ANONYMOUS_USER ? 'Anonymous' : 'User'}</Text>
         <Text style={styles.genInfoRightSpaceContainer}>{formatDate()}</Text>
       </View>
       <View>
@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PatuaOne',
   },
   appContainer:{
+    paddingTop: 10,
     fontFamily: 'PatuaOne',
     backgroundColor: 'white',
     borderRadius: 20,
@@ -235,14 +236,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  genLeftTitleContainer:{
+    marginTop: 1,
+    marginLeft: 34,
+    marginBottom: 10,
+    fontSize: '25rem',
+    fontWeight: 'bold'
+  },
+  genLeftCommentTitle:{
+    marginTop: 1,
+    marginLeft: 36,
+    marginBottom: 10,
+    fontSize: '18rem',
+    fontWeight: 'bold'
+  },
   genInfoLeftSpaceContainer:{
     marginTop: 1,
-    marginLeft: 50,
+    marginLeft: 36,
     marginBottom: 10,
+  },
+  genInfoLeftSpaceNameContainer:{
+    marginTop: 1,
+    marginLeft: 36,
+    marginBottom: 10,
+    fontWeight: 'bold'
   },
   genInfoRightSpaceContainer:{
     marginTop: 1,
-    marginRight: 50,
+    marginRight: 34,
     marginBottom: 10,
   },
   sectionBorder:{
@@ -278,4 +299,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 5,
   },
+  likesContainer:{
+    opacity: 0
+  }
 });

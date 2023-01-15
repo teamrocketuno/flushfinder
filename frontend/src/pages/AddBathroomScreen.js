@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput  } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
-const background = '../../assets/backgrounds/bg1.png';
+const background = '../../assets/backgrounds/bg3.png';
 const poopEmoji = '../../PoopEmoji.png';
 
 const URL = 'http://172.104.196.152/';
@@ -121,6 +121,6 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '60%',
     marginTop: '5%',
-    marginBottom: '20%'
+    marginBottom: '5%'
   }
 });

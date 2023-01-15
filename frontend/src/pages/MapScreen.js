@@ -11,16 +11,18 @@ SplashScreen.preventAutoHideAsync();
 const actions = [
   {
     text: "Add Bathroom",
-    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 25, height: 25 }} />,
+    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 30, height: 30 }} />,
     name: "bt_addbathroom",
     position: 1,
   },
+  /*
   {
     text: "Options",
-    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 25, height: 25 }} />,
+    icon: <Image source={require("../../Images/JohnLou.png")} style={{ width: 30, height: 30 }} />,
     name: "bt_options",
     position: 2,
   },
+  */
 ];
 
 const navmap = {

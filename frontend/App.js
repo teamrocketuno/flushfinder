@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, ScrollView, StyleSheet, Text, Image, TextInput, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, Image, ImageBackground, TextInput, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -21,6 +21,7 @@ function MapScreen({ navigation }) {
 
 function BathroomScreen({ navigation }) {
   return (
+    <ImageBackground source = {require('./assets/backgrounds/bg1.png')} style = {styles.backgroundImage} resizeMode= 'repeat'>
     <View style={styles.appContainer}>
 
         <View style={styles.invisibleBlock}></View>
@@ -70,8 +71,8 @@ function BathroomScreen({ navigation }) {
             <Text style={styles.genInfoLeftSpaceContainer}>accountName</Text>
             <Text style={styles.genInfoRightSpaceContainer}>timeStamp</Text>
         </View>
-
     </View>
+    </ImageBackground>
   );
 }
 
@@ -98,17 +99,42 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage:{
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
+  },
   appContainer:{
-    padding: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    margin: '8%',
+    opacity: 1,
+    shadowColor: "#000",
+    shadowColor: 'white',
+
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 2.8,
+    shadowRadius: 6.27,
+    
+    elevation: 10,
   },
-  invisibleBlock:{
-    marginTop: 20,
+  exitBox: {
+    width: 350,
+    height: 50,
+    borderColor: 'black',
+    borderWidth: 2,
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center,'
   },
-  likesContainer: {
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 50,
-    flexDirection: 'row',
+  centerExitBoxContainer: {
+    marginTop: 50,
+    marginBottom: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   genInfoContainer:{
     flexDirection: 'row',
@@ -118,13 +144,11 @@ const styles = StyleSheet.create({
     marginTop: 1,
     marginLeft: 50,
     marginBottom: 10,
-    fontSize: 20,
   },
   genInfoRightSpaceContainer:{
     marginTop: 1,
     marginRight: 50,
     marginBottom: 10,
-    fontSize: 20,
   },
   sectionBorder:{
     borderColor: 'black',
@@ -145,7 +169,6 @@ const styles = StyleSheet.create({
   attributeListContainer:{
     marginTop: 1,
     marginBottom: 10,
-    fontSize: 20,
   },
   commentTitleSpacing:{
     alignItems: 'left',
@@ -160,7 +183,5 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     padding: 8,
     marginBottom: 5,
-    fontSize: 20,
   },
- 
 });

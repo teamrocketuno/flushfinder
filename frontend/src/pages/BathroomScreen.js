@@ -129,8 +129,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <View style={styles.attributeSpacingContainer}>
-          <Text style={styles.attributeListContainer}>Wheel-Chair Accessible</Text>
-          <Text style={styles.attributeListContainer}>Gender Neutral</Text>
+          <AttributeComponent attributes={toilet.attributes} />
         </View>
 
         <View style={styles.centerContainer}>
@@ -150,6 +149,38 @@ export function BathroomScreen({ navigation, route }) {
       </ScrollView>
     </ImageBackground>
   );
+}
+
+class AttributeComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  renderAttributes() {
+    return this.props.attributes.map((att) => <Attribute att={att} />)
+  }
+
+  render() {
+    return (this.renderAttributes());
+  }
+}
+
+const attributeMap = {
+  1: 'Wheelchair Accessible',
+  2: 'Gender Neutral',
+  3: 'Mens Only',
+  4: 'Womens Only',
+  5: 'Key/Code Required',
+  6: 'Purchase Required',
+  7: 'Shower Available',
+  8: 'Family Bathroom',
+  9: 'Baby Station'
+}
+
+const Attribute = (props) => {
+  return (
+    <Text style={styles.attributeListContainer}>{attributeMap[props.att]}</Text>
+  )
 }
 
 class CommentComponent extends Component {

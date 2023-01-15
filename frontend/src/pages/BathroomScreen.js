@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions, ScrollView } from "react-native";
+import { ImageBackground, View, Image, Text, Button, StyleSheet, TextInput, Dimensions, ScrollView, TouchableHighlight } from "react-native";
 import MapView from 'react-native-maps';
 import { Component } from "react";
 
@@ -98,6 +98,35 @@ export function BathroomScreen({ navigation, route }) {
     toilet.comments.forEach((id) => result = result + `id=${id}&`)
     return result;
   }
+
+  function like() {
+    var details = {
+      'id': toilet.id,
+    };
+    
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    
+    fetch(URL + 'like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: formBody
+    })
+      .then(response => response.json())
+        .then(json => {
+          fetchData().then((data) => {
+            setToilet(data);
+          }).catch((err) => console.log(err));
+        })
+      .catch(err => console.error(err))
+  }
   
   return (
     <ImageBackground source={require(background)} style={styles.backgroundImage} resizeMode='repeat'>
@@ -107,9 +136,11 @@ export function BathroomScreen({ navigation, route }) {
         <View style={styles.invisibleBlock}></View>
 
         <View style={styles.likesContainer}>
-          <Image source={require(poopEmoji)}
-            style={{ width: [width]/10, height: [width]/10 }} />
-          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20 }}>{toilet.likes.length}</Text>
+          <TouchableHighlight onPress={() => like()}>
+            <Image source={require(poopEmoji)}
+              style={{ width: [width]/10, height: [width]/10 }} />
+          </TouchableHighlight>
+          <Text style={{ fontFamily: 'PatuaOne', fontSize: 20, marginTop: 6 }}>  {toilet.likes.length}</Text>
         </View>
 
         <View style={styles.genInfoContainer}>
@@ -147,6 +178,10 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <CommentComponent comments={comments} />
+
+        <View style={styles.footerContainer}>
+          <Image source={require("../../Images/JohnLou.png")} style={{ width: 100, height: 100 }} />
+        </View>
       </View>
       </ScrollView>
     </ImageBackground>
@@ -308,6 +343,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  footerContainer:{
+    marginTop: '2%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   attributeSpacingContainer:{
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -320,7 +360,7 @@ const styles = StyleSheet.create({
   commentTitleSpacing:{
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    marginBottom: 2,
   },
   textInput:{
     borderWidth: 1,
@@ -331,6 +371,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   likesContainer:{
-    opacity: 0
+    flexDirection: 'row',
+    opacity: 1,
+    margin: 10
   }
 });

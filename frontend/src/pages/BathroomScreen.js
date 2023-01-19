@@ -174,7 +174,7 @@ export function BathroomScreen({ navigation, route }) {
         </View>
 
         <View style={styles.commentTitleSpacing}>
-          <TextInput style={styles.textInput} ref={input => { setTextInput(input) }} placeholder="Comment..." onSubmitEditing={(event) => uploadComment(event.nativeEvent.text)} />
+          <TextInput style={styles.textInput} multiline={true} ref={input => { setTextInput(input) }} placeholder="Comment..." onSubmitEditing={(event) => uploadComment(event.nativeEvent.text)} />
         </View>
 
         <CommentComponent comments={comments} />
@@ -226,7 +226,7 @@ class CommentComponent extends Component {
   }
 
   renderComments() {
-    this.props.comments.sort((a, b) => (a.time > b.time) ? 1 : -1)
+    this.props.comments.sort((a, b) => (a.time > b.time) ? -1 : 1)
     return this.props.comments.map((comment) => <Comment account={comment.user} time={comment.time} text={comment.text} />)
   }
 
